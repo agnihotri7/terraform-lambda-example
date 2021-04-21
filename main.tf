@@ -5,13 +5,21 @@
 # --------------------------------------------------------
 # AWS PROVIDER SETUP
 # --------------------------------------------------------
-terraform {
-  backend "s3" {
-    bucket = "test-tff" # local.s3_bucket_name  #terraform-state-prod
-    key    = "network/terraform.tfstate" # local.s3_bucket_key   #network/terraform.tfstate
-    region = "eu-west-1" # local.aws_region
-  }
+# terraform {
+#   # backend "s3" {
+#   #   bucket = "test-tff" # local.s3_bucket_name  #terraform-state-prod
+#   #   key    = "network/terraform.tfstate" # local.s3_bucket_key   #network/terraform.tfstate
+#   #   region = "eu-west-1" # local.aws_region
+#   # }
 
+#   # required_providers {
+#   #   aws = {
+#   #     source  = "hashicorp/aws"
+#   #     version = "~> 3.0"
+#   #   }
+#   # }
+# }
+terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -22,7 +30,9 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = var.aws_region # "${var.aws_region}"
+  region = var.aws_region
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 
   default_tags {
     tags = {
@@ -83,11 +93,3 @@ resource "aws_lambda_function" "test_tff" {
     }
   }
 }
-
-# --------------------------------------------------------
-# OUTPUT
-# --------------------------------------------------------
-output "lambda_arn" {
-  value = aws_iam_role.test-tff-role.arn
-}
-
